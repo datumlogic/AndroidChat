@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/image"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
+ 
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/icon"
+        android:paddingBottom="10dp"
+        android:textColor="#CC0033"
+        android:textSize="16sp" />
+    
+    <ImageView
+        android:id="@+id/pres"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/title"
+        android:layout_toRightOf="@+id/icon"
+        android:contentDescription="@string/availability"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
+ 
+    <TextView
+        android:id="@+id/desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/title"
+        android:paddingLeft="10dp"
+        android:textColor="#3399FF"
+        android:textSize="14sp" 
+        android:visibility="visible"/>
+    
+    <Button android:id="@+id/btnActivate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Activate" 
+            android:layout_below ="@+id/title"
+            android:layout_toRightOf="@+id/pres"
+            android:paddingLeft="10dp"
+            android:visibility="visible"/>
+    
+    <Button android:id="@+id/btnBlock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Block" 
+            android:layout_below ="@+id/title"
+            android:layout_toRightOf="@+id/btnActivate"
+            android:paddingLeft="10dp"
+            android:visibility="visible"/>
+</RelativeLayout>

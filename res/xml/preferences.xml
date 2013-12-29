@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+        <PreferenceCategory
+        	android:title="Server Setup"
+        	android:key="serversetup_category">
+
+        	<EditTextPreference
+            	android:key="userName"
+            	android:title="User Name"
+            	android:summary="Please enter a registered user name"
+            	android:dialogTitle="Enter Your User Name"
+            	android:dialogMessage="15 Chars or less"   
+            	android:defaultValue="gene4" />
+        	
+        	<EditTextPreference
+            	android:key="userPwd"
+            	android:title="User Password"
+            	android:summary="Please enter a registered user password"
+            	android:dialogTitle="Enter Your Password"
+            	android:dialogMessage="6-8 Chars" 
+            	android:inputType="textPassword"  
+            	android:defaultValue="gene4" />
+        	
+        	<EditTextPreference
+            	android:key="host"
+            	android:title="Host"
+            	android:summary="Please enter the Host name of the XMPP Server"
+            	android:dialogTitle="Enter the Host"
+            	android:dialogMessage="Fully Qualified name"   
+            	android:defaultValue="ec2-54-201-47-27.us-west-2.compute.amazonaws.com" />
+        	
+        	<EditTextPreference
+            	android:key="service"
+            	android:title="Service"
+            	android:summary="Please enter the service name"
+            	android:dialogTitle="Enter the Service"
+            	android:dialogMessage="Fully Qualified name"   
+            	android:defaultValue="ec2-54-201-47-27.us-west-2.compute.amazonaws.com" />
+        	
+        	<EditTextPreference
+            	android:key="port"
+            	android:title="Port"
+            	android:summary="Please enter the server port"
+            	android:dialogTitle="Enter The Port"
+            	android:dialogMessage="0-65535"   
+            	android:defaultValue="5222" />
+        	
+    	</PreferenceCategory>
+    	<PreferenceCategory
+        	android:title="Social Media  Accounts"
+        	android:key="socialmedia_category">
+        	
+			<Preference android:title="Connect to Twitter"
+                android:key="btnTwitter"
+                android:summary="Click this only after Server settings completed"/>
+			
+		</PreferenceCategory>
+		
+    	<PreferenceCategory
+        	android:title="Other"
+        	android:key="other_category">
+        	
+			<Preference android:title="Exit"
+                android:key="btnExit"
+                android:summary="Click this when finished"/>
+			
+		</PreferenceCategory>
+
+</PreferenceScreen>

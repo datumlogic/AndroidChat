@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Android Chat</string>
+    <string name="action_settings">Settings</string>
+    <string name="create_new">Add Favorite</string>
+    <string name="message">New message</string>
+    <string name="hint">Type to compose</string>
+    <string name="submit">OK</string>
+    <string name="image">Thumbnail</string>
+    <string name="availability">Availability</string>
+    <string name="status">Status</string>
+</resources>
