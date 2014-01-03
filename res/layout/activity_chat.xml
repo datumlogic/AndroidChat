@@ -12,14 +12,21 @@
         android:layout_alignParentTop="true" >
 
     </ListView>
+    
+    <Button
+        android:id="@+id/uploadBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/upload" />
 
     <EditText
         android:id="@+id/chatET"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/sendBtn"
+        android:layout_toRightOf="@+id/uploadBtn"
         android:ems="10"
         android:hint="@string/hint"
         android:singleLine="true" />

@@ -57,6 +57,8 @@ public class FavoritesActivity extends Activity {
     //private ArrayList<String> contacts = new ArrayList<String>();
     private ArrayList<FavoriteItem> contacts = new ArrayList<FavoriteItem>();
     
+    
+    
     private Handler mHandler = new Handler();
 	
 	protected static XMPPConnection connection;
@@ -93,6 +95,8 @@ public class FavoritesActivity extends Activity {
         }
         
         setTitle("Mashing as " + USERNAME.split("@")[0]);
+        
+        XMPPConnection.DEBUG_ENABLED=true;
         
 		listview = (ListView) this.findViewById(R.id.listContacts);
 		

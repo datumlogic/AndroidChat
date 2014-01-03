@@ -7,6 +7,7 @@
     <string name="message">New message</string>
     <string name="hint">Type to compose</string>
     <string name="submit">OK</string>
+    <string name="upload">UP</string>
     <string name="image">Thumbnail</string>
     <string name="availability">Availability</string>
     <string name="status">Status</string>

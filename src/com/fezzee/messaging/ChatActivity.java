@@ -1,5 +1,8 @@
 package com.fezzee.messaging;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import org.jivesoftware.smack.PacketListener;
@@ -11,10 +14,13 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +46,7 @@ public class ChatActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
 		
+		
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		
 		Bundle extras = getIntent().getExtras();
@@ -58,6 +65,7 @@ public class ChatActivity extends Activity {
 
 	    // Set a listener to send a chat text message
 	    Button send = (Button) this.findViewById(R.id.sendBtn);
+	    Button upload = (Button) this.findViewById(R.id.uploadBtn);
 	    send.setOnClickListener(new View.OnClickListener() {
 	      public void onClick(View view) {
 	        //String to = recipient + "@" + HOST;
@@ -86,6 +94,49 @@ public class ChatActivity extends Activity {
 	        }
 	      }
 	    });
+	    
+	    upload.setOnClickListener(new View.OnClickListener() {
+		      public void onClick(View view) {
+		        Log.d("ChatAtivity::upload-onClick","Entered");
+		        //If you want to save a static file in your application at compile time, 
+		        //save the file in your project res/raw/ directory. You can open it with 
+		        //openRawResource(), passing the R.raw.<filename> resource ID. This method 
+		        //returns an InputStream that you can use to read the file (but you cannot 
+		        //write to the original file).
+		        //InputStream ins = getResources().openRawResource(R.raw.test);
+		        
+		     // Send the file
+		        try{
+		           // Create the file transfer manager
+		           FileTransferManager manager = new FileTransferManager(FavoritesActivity.connection);
+		  		
+		           // Create the outgoing file transfer
+		           OutgoingFileTransfer transfer = manager.createOutgoingFileTransfer("test@ec2-54-201-47-27.us-west-2.compute.amazonaws.com/Genes-MacBookPro");
+		           
+		           //File cacheDir = getCacheDir();
+		           //File outFile = new File(cacheDir,"file.xml");
+		           FileOutputStream fOut = openFileOutput("samplefile.txt", MODE_WORLD_READABLE);
+		           OutputStreamWriter osw = new OutputStreamWriter(fOut); 
+
+		           // Write the string to the file
+		           osw.write("NOW IS THE TIME");
+
+		           /* ensure that everything is
+		            * really written out and close */
+		            osw.flush();
+		            osw.close();
+		        	transfer.sendFile(getBaseContext().getFileStreamPath("samplefile.txt"), "You won't believe this!");
+                   
+		        } catch (Exception e) {
+		        	
+		        	Log.e("ChatAtivity::upload-onClick","[Exception] " + e.getMessage());
+		        	e.printStackTrace();
+		        	return;
+		        }
+		        Log.d("ChatAtivity::upload-onClick","Complete");
+		      }
+		    });
+	    
 	    setConnection(FavoritesActivity.connection);
 		
 	}
