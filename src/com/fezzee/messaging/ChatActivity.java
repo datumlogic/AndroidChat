@@ -2,10 +2,13 @@ package com.fezzee.messaging;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackAndroid;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -14,13 +17,13 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.filetransfer.FileTransfer.Status;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +31,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 
@@ -40,12 +44,20 @@ public class ChatActivity extends Activity {
     private String recipient;
     private EditText textMessage;
     private ListView listview;
+    
+    private OutgoingFileTransfer transfer= null;
+    private SmackAndroid asmk = null;
+    
+    private OutputStreamWriter osw;
+    
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
 		
+		
+		asmk = SmackAndroid.init(this);
 		
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		
@@ -65,7 +77,7 @@ public class ChatActivity extends Activity {
 
 	    // Set a listener to send a chat text message
 	    Button send = (Button) this.findViewById(R.id.sendBtn);
-	    Button upload = (Button) this.findViewById(R.id.uploadBtn);
+	    ImageButton upload = (ImageButton) this.findViewById(R.id.uploadBtn);
 	    send.setOnClickListener(new View.OnClickListener() {
 	      public void onClick(View view) {
 	        //String to = recipient + "@" + HOST;
@@ -97,7 +109,11 @@ public class ChatActivity extends Activity {
 	    
 	    upload.setOnClickListener(new View.OnClickListener() {
 		      public void onClick(View view) {
-		        Log.d("ChatAtivity::upload-onClick","Entered");
+		        Log.e("ChatAtivity::upload-onClick","Entered");
+		        
+
+		        
+		         
 		        //If you want to save a static file in your application at compile time, 
 		        //save the file in your project res/raw/ directory. You can open it with 
 		        //openRawResource(), passing the R.raw.<filename> resource ID. This method 
@@ -108,38 +124,105 @@ public class ChatActivity extends Activity {
 		     // Send the file
 		        try{
 		           // Create the file transfer manager
+		           if (FavoritesActivity.connection==null)
+		           {
+		        	   Log.e("ChatAtivity::upload-onClick","[FavoritesActivity.connection = null]");
+		        	   return;
+		           }
+		           
+		           InputStream input = getResources().openRawResource(R.raw.test);
+		           File file = null;
+		           try {
+		        	    file = new File(getCacheDir(), "test.txt");
+		        	    final OutputStream output = new FileOutputStream(file);
+		        	    try {
+		        	        try {
+		        	            final byte[] buffer = new byte[1024];
+		        	            int read;
+
+		        	            while ((read = input.read(buffer)) != -1)
+		        	                output.write(buffer, 0, read);
+
+		        	            output.flush();
+		        	        } finally {
+		        	            output.close();
+		        	        }
+		        	    } catch (Exception e) {
+		        	        e.printStackTrace();
+		        	    }
+		        	} finally {
+		        	    input.close();
+		        	}
+		           
+		           
 		           FileTransferManager manager = new FileTransferManager(FavoritesActivity.connection);
 		  		
 		           // Create the outgoing file transfer
-		           OutgoingFileTransfer transfer = manager.createOutgoingFileTransfer("test@ec2-54-201-47-27.us-west-2.compute.amazonaws.com/Genes-MacBookPro");
+		           transfer = manager.createOutgoingFileTransfer("gene@ec2-54-201-47-27.us-west-2.compute.amazonaws.com/Genes-MacBookPro");
 		           
-		           //File cacheDir = getCacheDir();
-		           //File outFile = new File(cacheDir,"file.xml");
-		           FileOutputStream fOut = openFileOutput("samplefile.txt", MODE_WORLD_READABLE);
-		           OutputStreamWriter osw = new OutputStreamWriter(fOut); 
-
-		           // Write the string to the file
-		           osw.write("NOW IS THE TIME");
-
-		           /* ensure that everything is
-		            * really written out and close */
-		            osw.flush();
-		            osw.close();
-		        	transfer.sendFile(getBaseContext().getFileStreamPath("samplefile.txt"), "You won't believe this!");
-                   
+		        	transfer.sendFile(file, "Test_File_Transfer");
+                    //Thread.sleep(25000);
+		        	
+		        	
 		        } catch (Exception e) {
 		        	
 		        	Log.e("ChatAtivity::upload-onClick","[Exception] " + e.getMessage());
 		        	e.printStackTrace();
 		        	return;
 		        }
-		        Log.d("ChatAtivity::upload-onClick","Complete");
+		        
+		        Log.e("ChatAtivity::upload-onClick","Complete");
+		        while(!transfer.isDone()) {
+		        	   if(transfer.getStatus().equals(Status.error)) {
+		        	      System.out.println("ERROR!!! " + transfer.getError());
+		        	   } else if (transfer.getStatus().equals(Status.cancelled)
+		        	                    || transfer.getStatus().equals(Status.refused)) {
+		        	      System.out.println("Cancelled!!! " + transfer.getError());
+		        	   }
+		        	   try {
+		        	      Thread.sleep(1000L);
+		        	   } catch (InterruptedException e) {
+		        	      e.printStackTrace();
+		        	   }
+		        	}
+		        	if(transfer.getStatus().equals(Status.refused) || transfer.getStatus().equals(Status.error)
+		        	 || transfer.getStatus().equals(Status.cancelled)){
+		        	   System.out.println("refused cancelled error " + transfer.getError());
+		        	} else {
+		        	   System.out.println("Success");
+		        	}
+
+		
 		      }
+	    
 		    });
 	    
 	    setConnection(FavoritesActivity.connection);
 		
 	}
+	
+
+	
+	@Override
+  public void onPause() {
+      super.onPause();
+      Log.d("PublishActivity::onPause","Entered");
+      
+      //listview.setOnItemClickListener(null);
+
+
+  }
+
+  @Override
+  public void onResume() {
+      super.onResume();
+      Log.d("PublishActivity::onResume","Entered");
+          //mHandler = new Handler();
+          //if(listview != null){
+             // listview.setOnItemClickListener(exampleListener);
+        //	  setListAdapter();
+          // }
+  }
 
 
 	/**
@@ -201,12 +284,10 @@ public class ChatActivity extends Activity {
 	  @Override
 	  protected void onDestroy() {
 	    super.onDestroy();
-	    try {
-	      //connection.disconnect();
-	    } catch (Exception e) {
+	    //connection.disconnect(); 
+	  }  //end of onDestroy
+	  
 
-	    }
-	  }
 
 
 

@@ -33,7 +33,7 @@ public class SettingsPreferenceActivity extends PreferenceActivity  {
 	private String CONSUMER_SECRET = "TjoGiQDbejvltPkqTFiRf0eo0E7fr7fNVY3qep1D0";      // Constants.CONSUMER_SECRET;
 	private String CALLBACK_URL = "callback://fezzee";
 
-	private static final String PREFS_NAME = "TwitterLogin";
+	//private static final String PREFS_NAME = "TwitterLogin";
 	
 	
 	SharedPreferences settings;
